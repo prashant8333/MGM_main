@@ -13,7 +13,6 @@ const dialogues = {
     '5a': "Okay, Don't worry just tell me have you felt pain on this tooth before or have you under- gone any treatment of this tooth before.",
     '5b': "No, I have not undergone any such treatment.",
     '5c': "I'm telling u, it's horrible !! It all started with a bite of ice cream. It was sharp. But If I recall correctly it subsided after few seconds but I did not dare to have another bite...",
-    '5d': "Hmmm...ok",
     '7a': "Cool! now we are all set to examine the oral cavity"
 };
 
@@ -74,24 +73,7 @@ function hideElement(id) {
 // Scene tracking to prevent overlapping async logic
 let sceneTrackingId = 0;
 
-// Utility to play sound and manage current audio
-function playSound(src) {
-    if (currentAudio) {
-        currentAudio.pause();
-        currentAudio = null;
-    }
-    currentAudio = new Audio(src);
-    currentAudio.play().catch(e => {
-        console.warn("Audio playback blocked. Waiting for interaction.", e);
-        // If blocked, we'll try to play once on the next click
-        const retry = () => {
-            currentAudio.play();
-            document.removeEventListener('click', retry);
-        };
-        document.addEventListener('click', retry);
-    });
-    return currentAudio;
-}
+
 
 function unlockAudio() {
     if (audioUnlocked) return;
@@ -102,15 +84,35 @@ function unlockAudio() {
     }).catch(() => { });
 }
 
-// Scene-specific enter logic
-async function onSceneEnter(sceneIndex) {
-    const executionId = ++sceneTrackingId;
-
-    // Stop previous audio when entering new scene
+// Stop and reset ALL audio on the page
+function stopAllAudio() {
+    document.querySelectorAll('audio').forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+    });
     if (currentAudio) {
         currentAudio.pause();
         currentAudio = null;
     }
+}
+
+// Global helper to play an embedded audio element and stop all other audio
+function playAudioElement(id) {
+    stopAllAudio();
+    const el = document.getElementById(id);
+    if (el) {
+        el.currentTime = 0;
+        currentAudio = el;
+        el.play().catch(e => console.warn(`Audio ${id} blocked:`, e));
+    }
+}
+
+// Scene-specific enter logic
+async function onSceneEnter(sceneIndex) {
+    const executionId = ++sceneTrackingId;
+
+    // Failsafe: Stop all audio whenever a scene is entered
+    stopAllAudio();
 
     updateProgress();
     updateNavButtons();
@@ -129,18 +131,19 @@ async function onSceneEnter(sceneIndex) {
             hideElement('dialogue-1b-container');
             hideElement('btn-scene-1');
 
-            // Play patient voice - path must exactly match filename with spaces
-            playSound('images/patient 1st dialogue.mp3');
-
             await wait(300); // Wait for scene transit
             if (!isValid()) return;
 
+            // Patient speaks — play voice + show bubble together
+            playAudioElement('patientVoice1');
             showElement('bubble-1a');
             await typeText('dialogue-1a', dialogues['1a'], 30);
             await wait(getDialogueWaitTime(dialogues['1a']));
             if (!isValid()) return;
             hideElement('bubble-1a');
 
+            // Doctor responds — play doctor voice + show bubble together
+            playAudioElement('doctorVoice1');
             showElement('dialogue-1b-container');
             await typeText('dialogue-1b', dialogues['1b'], 30);
             await wait(getDialogueWaitTime(dialogues['1b']));
@@ -167,12 +170,16 @@ async function onSceneEnter(sceneIndex) {
             await wait(400);
             if (!isValid()) return;
 
+            // Patient speaks (bubble 3a) — play voice
+            playAudioElement('patientVoice2');
             showElement('bubble-3a');
             await typeText('dialogue-3a', dialogues['3a']);
             await wait(getDialogueWaitTime(dialogues['3a']));
             if (!isValid()) return;
             hideElement('bubble-3a');
 
+            // Patient speaks (bubble 3b - ice cream) — play second voice
+            playAudioElement('patientVoice2b');
             showElement('dialogue-3b-container');
             await typeText('dialogue-3b', dialogues['3b']);
             await wait(getDialogueWaitTime(dialogues['3b']));
@@ -194,35 +201,34 @@ async function onSceneEnter(sceneIndex) {
             hideElement('dialogue-5a-container');
             hideElement('dialogue-5b-container');
             hideElement('dialogue-5c-container');
-            hideElement('dialogue-5d-container');
             hideElement('btn-scene-5');
 
             await wait(400);
             if (!isValid()) return;
 
+            // Doctor speaks (5a) — play voice, bubble disappears
+            playAudioElement('doctorVoice5');
             showElement('dialogue-5a-container');
             await typeText('dialogue-5a', dialogues['5a']);
             await wait(getDialogueWaitTime(dialogues['5a']));
             if (!isValid()) return;
             hideElement('dialogue-5a-container');
 
+            // Patient replies (5b) — play voice, bubble disappears
+            playAudioElement('patientVoice5');
             showElement('dialogue-5b-container');
             await typeText('dialogue-5b', dialogues['5b']);
             await wait(getDialogueWaitTime(dialogues['5b']));
             if (!isValid()) return;
             hideElement('dialogue-5b-container');
 
+            // Patient (5c - ice cream story) — play voice, bubble STAYS on screen
+            playAudioElement('patientVoice5c');
             showElement('dialogue-5c-container');
             await typeText('dialogue-5c', dialogues['5c'], 30);
             await wait(getDialogueWaitTime(dialogues['5c']));
             if (!isValid()) return;
-            hideElement('dialogue-5c-container');
-
-            showElement('dialogue-5d-container');
-            await typeText('dialogue-5d', dialogues['5d']);
-            await wait(getDialogueWaitTime(dialogues['5d']));
-            if (!isValid()) return;
-            hideElement('dialogue-5d-container');
+            // 5c stays visible — no hideElement here
 
             await wait(400);
             if (!isValid()) return;
@@ -245,6 +251,7 @@ async function onSceneEnter(sceneIndex) {
             await wait(400);
             if (!isValid()) return;
 
+            playAudioElement('doctorVoice8');
             showElement('dialogue-7a-container');
             await typeText('dialogue-7a', dialogues['7a']);
             await wait(getDialogueWaitTime(dialogues['7a']));
@@ -352,11 +359,13 @@ function easeOutQuart(t) {
 // Scene navigation
 function nextScene() {
     if (currentScene >= totalScenes - 1) return;
+    stopAllAudio();
     goToScene(currentScene + 1);
 }
 
 function prevScene() {
     if (currentScene <= 0) return;
+    stopAllAudio();
     goToScene(currentScene - 1, true);
 }
 
@@ -415,6 +424,9 @@ function updateNavButtons() {
 function restartCase() {
     if (isAnimating) return;
 
+    // Kill all sounds immediately on restart
+    stopAllAudio();
+
     // Reset all scenes
     currentScene = 0;
 
@@ -443,7 +455,7 @@ function restartCase() {
         'btn-pain-submit', 'btn-scene-12',
         'btn-quiz-thermal', 'btn-quiz-diagnosis', 'btn-quiz-q1', 'btn-quiz-q2', 'btn-quiz-q3',
         'dialogue-1b-container', 'bubble-1a', 'bubble-3a', 'dialogue-3b-container',
-        'dialogue-5a-container', 'dialogue-5b-container', 'dialogue-5c-container', 'dialogue-5d-container',
+        'dialogue-5a-container', 'dialogue-5b-container', 'dialogue-5c-container',
         'dialogue-7a-container'
     ].forEach(id => {
         const el = document.getElementById(id);

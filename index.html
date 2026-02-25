@@ -49,6 +49,17 @@
         <section class="scene" id="scene-1" data-scene="1">
             <div class="scene-content dialogue-scene">
                 <div class="scene-label">Patient Arrival</div>
+
+                <!-- Hidden audio for patient voice -->
+                <audio id="patientVoice1" preload="auto">
+                    <source src="images/patient 1st dialogue.mp3" type="audio/mpeg">
+                </audio>
+
+                <!-- Hidden audio for doctor voice -->
+                <audio id="doctorVoice1" preload="auto">
+                    <source src="images/doctor 1st.mp3" type="audio/mpeg">
+                </audio>
+
                 <div class="clinic-image-container">
                     <img src="images/patient_intro.jpg" alt="Patient arriving at dental clinic" class="clinic-img">
                     <div class="clinic-overlay"></div>
@@ -93,6 +104,18 @@
         <section class="scene" id="scene-3" data-scene="3">
             <div class="scene-content dialogue-scene">
                 <div class="scene-label">Patient History</div>
+
+                <!-- Hidden audio for patient 2nd dialogue -->
+                <audio id="patientVoice2" preload="auto">
+                    <source src="images/patient 2 dialogue.mp3.mpeg" type="audio/mpeg">
+                    <source src="images/patient 2nd dilagou.mp3" type="audio/mpeg">
+                </audio>
+
+                <!-- Hidden audio for patient 2nd dialogue part 2 (ice cream) -->
+                <audio id="patientVoice2b" preload="auto">
+                    <source src="images/pt2.mpeg" type="audio/mpeg">
+                </audio>
+
                 <div class="clinic-image-container">
                     <img src="images/patient_history_2.jpg" alt="Patient in dental chair" class="clinic-img">
                     <div class="clinic-overlay"></div>
@@ -143,6 +166,23 @@
         <section class="scene" id="scene-5" data-scene="5">
             <div class="scene-content dialogue-scene">
                 <div class="scene-label">Patient History</div>
+
+                <!-- Hidden audio for doctor's voice in slide 6 -->
+                <audio id="doctorVoice5" preload="auto">
+                    <source src="images/dt.mp3" type="audio/mpeg">
+                </audio>
+
+                <!-- Hidden audio for patient's voice in slide 6 -->
+                <audio id="patientVoice5" preload="auto">
+                    <source src="images/pt6.mp3" type="audio/mpeg">
+                </audio>
+
+                <!-- Hidden audio for patient's 3rd voice in slide 6 (ice cream story) -->
+                <audio id="patientVoice5c" preload="auto">
+                    <source src="images/pt66.mp3" type="audio/mpeg">
+                </audio>
+
+
                 <div class="clinic-image-container">
                     <img src="images/patient_history_2.jpg" alt="Doctor and patient in clinic" class="clinic-img">
                     <div class="clinic-overlay"></div>
@@ -169,14 +209,6 @@
                         <span class="bubble-speaker patient-speaker">Patient</span>
                         <p class="dialogue-text" id="dialogue-5c"></p>
                         <div class="bubble-tail tail-left"></div>
-                    </div>
-
-                    <!-- Doctor bubble (5d) - Middle Right -->
-                    <div class="speech-bubble doctor-bubble hidden" id="dialogue-5d-container"
-                        style="top: 45%; right: 6%;">
-                        <span class="bubble-speaker doctor-speaker">Doctor</span>
-                        <p class="dialogue-text" id="dialogue-5d"></p>
-                        <div class="bubble-tail tail-right"></div>
                     </div>
                 </div>
                 <button class="btn-primary btn-next hidden" id="btn-scene-5" onclick="nextScene()">
@@ -244,6 +276,12 @@
         <section class="scene" id="scene-7" data-scene="7">
             <div class="scene-content dialogue-scene">
                 <div class="scene-label">Examination</div>
+
+                <!-- Hidden audio for doctor's voice -->
+                <audio id="doctorVoice8" preload="auto">
+                    <source src="images/dd.mp3" type="audio/mpeg">
+                </audio>
+
                 <div class="clinic-image-container">
                     <img src="images/oral_exam.jpg" alt="Doctor examining patient" class="clinic-img">
                     <div class="clinic-overlay"></div>
