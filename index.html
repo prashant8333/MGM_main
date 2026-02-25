@@ -12,7 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=1.2">
 </head>
 
 <body>
@@ -39,7 +39,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn-primary btn-start" onclick="nextScene()">
+                <button class="btn-primary btn-start" onclick="unlockAudio(); nextScene()">
                     Begin Case <span class="btn-arrow">→</span>
                 </button>
             </div>
@@ -94,11 +94,11 @@
             <div class="scene-content dialogue-scene">
                 <div class="scene-label">Patient History</div>
                 <div class="clinic-image-container">
-                    <img src="images/exam_background.jpg" alt="Patient in dental chair" class="clinic-img">
+                    <img src="images/patient_history_2.jpg" alt="Patient in dental chair" class="clinic-img">
                     <div class="clinic-overlay"></div>
 
                     <!-- Patient speech bubble 1 (3a) -->
-                    <div class="speech-bubble patient-bubble hidden" id="bubble-3a" style="top: 5%; left: 45%;">
+                    <div class="speech-bubble patient-bubble hidden" id="bubble-3a" style="top: 5%; left: 5%;">
                         <span class="bubble-speaker patient-speaker">Patient</span>
                         <p class="dialogue-text" id="dialogue-3a"></p>
                         <div class="bubble-tail tail-left"></div>
@@ -106,7 +106,7 @@
 
                     <!-- Patient speech bubble 2 (3b) -->
                     <div class="speech-bubble patient-bubble hidden" id="dialogue-3b-container"
-                        style="top: 55%; left: 45%;">
+                        style="top: 45%; left: 50%;">
                         <span class="bubble-speaker patient-speaker">Patient</span>
                         <p class="dialogue-text" id="dialogue-3b"></p>
                         <div class="bubble-tail tail-left"></div>
@@ -328,90 +328,60 @@
         <section class="scene" id="scene-10" data-scene="10">
             <div class="scene-content exam-scene">
                 <div class="scene-label">Percussion Test</div>
-                <div class="exam-animation-container">
-                    <div class="tooth-exam-visual">
-                        <div class="tooth-svg-container">
-                            <svg viewBox="0 0 200 300" class="tooth-svg">
-                                <path d="M60,80 Q60,30 100,20 Q140,30 140,80 L145,180 Q145,260 100,280 Q55,260 55,180 Z"
-                                    fill="#f0e6d3" stroke="#c9b896" stroke-width="2" />
-                                <ellipse cx="100" cy="60" rx="25" ry="20" fill="#4a3728" opacity="0.9" />
-                                <ellipse cx="100" cy="55" rx="18" ry="14" fill="#2d1f14" />
-                                <!-- Percussion probe tapping -->
-                                <g class="percussion-anim" id="percussionAnim">
-                                    <line x1="100" y1="-30" x2="100" y2="15" stroke="#b0b0b0" stroke-width="3"
-                                        stroke-linecap="round" />
-                                    <circle cx="100" cy="15" r="3" fill="#999" />
-                                </g>
-                                <!-- Pain waves -->
-                                <g class="pain-waves" id="painWaves">
-                                    <circle cx="100" cy="60" r="30" fill="none" stroke="#ff4444" stroke-width="1.5"
-                                        opacity="0" />
-                                    <circle cx="100" cy="60" r="45" fill="none" stroke="#ff4444" stroke-width="1"
-                                        opacity="0" />
-                                    <circle cx="100" cy="60" r="60" fill="none" stroke="#ff4444" stroke-width="0.5"
-                                        opacity="0" />
-                                </g>
-                            </svg>
+
+                <div class="interactive-exam-container" id="percussionInteractive">
+                    <div class="exam-background">
+                        <img src="images/mouth_close_up.jpg" alt="Tooth close up" class="exam-bg-img">
+                        <div class="exam-hotspot" id="toothHotspot" onclick="performPercussion()"></div>
+
+                        <!-- Pain Effect Overlay -->
+                        <div class="pain-impact hidden" id="painImpact">
+                            <img src="images/percussion_ouch_v2.jpg" alt="Pain reaction" class="pain-impact-img">
                         </div>
-                        <p class="exam-description">Tapping the tooth with probe to check for tenderness...</p>
                     </div>
-                    <div class="patient-reaction" id="percussionReaction">
-                        <span class="reaction-icon">😣</span>
-                        <span class="reaction-text">Ouch! That hurts!</span>
+
+                    <!-- Draggable/Clickable Tool (extracted from visual) -->
+                    <div class="interactive-tool hand-held-tool" id="interactiveProbe">
+                        <div class="tool-label">PICK UP PROBE</div>
+                    </div>
+
+                    <div class="interaction-hint">
+                        <span class="hint-icon">👆</span>
+                        <p>Click the 1st Molar to perform Percussion Test</p>
                     </div>
                 </div>
-                <button class="btn-primary btn-next" onclick="nextScene()">
+
+                <div class="patient-reaction" id="percussionReaction">
+                    <span class="reaction-icon">😣</span>
+                    <span class="reaction-text">Ouch! That hurts!</span>
+                </div>
+
+                <button class="btn-primary btn-next hidden" id="btn-percussion-next" onclick="nextScene()">
                     Thermal Test <span class="btn-arrow">→</span>
                 </button>
             </div>
         </section>
 
-        <!-- SCENE 11: Thermal Test Quiz -->
+        <!-- SCENE 11: Thermal Test -->
         <section class="scene" id="scene-11" data-scene="11">
             <div class="scene-content exam-scene">
                 <div class="scene-label">Thermal Test</div>
-                <div class="exam-animation-container">
-                    <div class="thermal-test-visual">
-                        <div class="spray-animation">
-                            <div class="spray-can">
-                                <div class="can-body">❄️</div>
-                                <div class="spray-particles" id="sprayParticles">
-                                    <span></span><span></span><span></span><span></span><span></span>
-                                </div>
-                            </div>
-                            <div class="tooth-target">🦷</div>
-                        </div>
-                        <p class="exam-description">Doctor sprays cold stimulus on the affected tooth...</p>
-                        <div class="patient-reaction active">
-                            <span class="reaction-icon">😖</span>
-                            <span class="reaction-text">Ahhh! That's cold!</span>
-                        </div>
-                    </div>
+
+                <!-- Video Player -->
+                <div class="ept-video-wrapper">
+                    <video id="thermalVideo" class="ept-video" src="images/thermal.mp4" autoplay loop muted playsinline
+                        controls>
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
-                <div class="quiz-card" id="quiz-thermal">
-                    <h3 class="quiz-question">What is the result of the Thermal Test?</h3>
-                    <div class="quiz-options">
-                        <button class="quiz-option" data-quiz="thermal" data-answer="1" data-correct="false"
-                            onclick="selectQuizAnswer(this)">
-                            <span class="option-letter">A</span>
-                            <span class="option-text">Normal</span>
-                        </button>
-                        <button class="quiz-option" data-quiz="thermal" data-answer="2" data-correct="true"
-                            onclick="selectQuizAnswer(this)">
-                            <span class="option-letter">B</span>
-                            <span class="option-text">Abnormal response to cold or heat</span>
-                        </button>
-                        <button class="quiz-option" data-quiz="thermal" data-answer="3" data-correct="false"
-                            onclick="selectQuizAnswer(this)">
-                            <span class="option-letter">C</span>
-                            <span class="option-text">No response</span>
-                        </button>
-                    </div>
-                    <div class="quiz-feedback hidden" id="feedback-thermal"></div>
-                    <button class="btn-primary btn-next hidden" id="btn-quiz-thermal" onclick="nextScene()">
-                        Continue <span class="btn-arrow">→</span>
-                    </button>
+
+                <div class="interaction-hint" style="position: static; transform: none;">
+                    <p>Observe the patient's reaction to the cold stimulus.</p>
                 </div>
+
+                <button class="btn-primary btn-next" onclick="nextScene()">
+                    Continue <span class="btn-arrow">→</span>
+                </button>
             </div>
         </section>
 
@@ -419,6 +389,7 @@
         <section class="scene" id="scene-12" data-scene="12">
             <div class="scene-content exam-scene">
                 <div class="scene-label">Electric Pulp Test (EPT)</div>
+
                 <div class="ept-container">
                     <div class="ept-comparison">
                         <div class="ept-card normal-tooth">
@@ -460,31 +431,13 @@
                 <div class="scene-label">Radiographic Examination</div>
                 <div class="radiograph-container">
                     <div class="xray-frame">
-                        <div class="xray-image">
-                            <svg viewBox="0 0 300 250" class="xray-svg">
-                                <!-- Dark background -->
-                                <rect width="300" height="250" fill="#0a0a0a" rx="8" />
-                                <!-- Jawbone -->
-                                <path d="M20,200 Q50,210 100,200 Q150,190 200,195 Q250,200 280,205" fill="none"
-                                    stroke="#445566" stroke-width="20" opacity="0.6" />
-                                <!-- Teeth silhouettes -->
-                                <rect x="40" y="90" width="30" height="100" rx="5" fill="#667788" opacity="0.7" />
-                                <rect x="80" y="85" width="32" height="105" rx="5" fill="#667788" opacity="0.7" />
-                                <!-- Tooth 36 - with cavity shadow -->
-                                <rect x="122" y="80" width="35" height="110" rx="5" fill="#667788" opacity="0.7"
-                                    stroke="#88aacc" stroke-width="1" />
-                                <ellipse cx="140" cy="95" rx="12" ry="10" fill="#222" opacity="0.9" />
-                                <!-- Arrow pointing to cavity -->
-                                <line x1="180" y1="70" x2="155" y2="90" stroke="#ff6666" stroke-width="2" />
-                                <polygon points="155,90 160,82 162,92" fill="#ff6666" />
-                                <text x="182" y="68" fill="#ff6666" font-size="10" font-family="Inter">Cavity</text>
-                                <!-- More teeth -->
-                                <rect x="167" y="85" width="30" height="105" rx="5" fill="#667788" opacity="0.7" />
-                                <rect x="207" y="88" width="30" height="102" rx="5" fill="#667788" opacity="0.7" />
-                                <!-- Periapical area - normal -->
-                                <text x="120" y="210" fill="#88aacc" font-size="9" font-family="Inter">No periapical
-                                    radiolucency</text>
-                            </svg>
+                        <div class="xray-image" style="position: relative;">
+                            <img src="images/cavity.jpeg" alt="Patient Radiograph"
+                                style="width: 100%; border-radius: 4px; display: block;">
+                            <div
+                                style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); color: #88aacc; font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif; text-shadow: 0 0 4px rgba(0,0,0,0.8);">
+                                No periapical radiolucency
+                            </div>
                         </div>
                     </div>
                     <div class="xray-findings">
@@ -705,9 +658,9 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
 
-    <script src="js/quiz.js"></script>
-    <script src="js/model.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/quiz.js?v=1.2"></script>
+    <script src="js/model.js?v=1.2"></script>
+    <script src="js/app.js?v=1.2"></script>
 </body>
 
 </html>

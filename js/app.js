@@ -2,6 +2,7 @@
 
 let currentScene = 0;
 const totalScenes = 19;
+let currentAudio = null;
 
 // Dialogue scripts
 const dialogues = {
@@ -15,6 +16,9 @@ const dialogues = {
     '5d': "Hmmm...ok",
     '7a': "Cool! now we are all set to examine the oral cavity"
 };
+
+// Audio Unlocked flag for browser autoplay policies
+let audioUnlocked = false;
 
 // Calculate dynamic wait time based on dialogue length
 function getDialogueWaitTime(text) {
@@ -70,9 +74,43 @@ function hideElement(id) {
 // Scene tracking to prevent overlapping async logic
 let sceneTrackingId = 0;
 
+// Utility to play sound and manage current audio
+function playSound(src) {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+    }
+    currentAudio = new Audio(src);
+    currentAudio.play().catch(e => {
+        console.warn("Audio playback blocked. Waiting for interaction.", e);
+        // If blocked, we'll try to play once on the next click
+        const retry = () => {
+            currentAudio.play();
+            document.removeEventListener('click', retry);
+        };
+        document.addEventListener('click', retry);
+    });
+    return currentAudio;
+}
+
+function unlockAudio() {
+    if (audioUnlocked) return;
+    const silent = new Audio();
+    silent.play().then(() => {
+        audioUnlocked = true;
+        console.log("Audio Unlocked");
+    }).catch(() => { });
+}
+
 // Scene-specific enter logic
 async function onSceneEnter(sceneIndex) {
     const executionId = ++sceneTrackingId;
+
+    // Stop previous audio when entering new scene
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+    }
 
     updateProgress();
     updateNavButtons();
@@ -90,6 +128,9 @@ async function onSceneEnter(sceneIndex) {
             hideElement('bubble-1a');
             hideElement('dialogue-1b-container');
             hideElement('btn-scene-1');
+
+            // Play patient voice - path must exactly match filename with spaces
+            playSound('images/patient 1st dialogue.mp3');
 
             await wait(300); // Wait for scene transit
             if (!isValid()) return;
@@ -225,13 +266,17 @@ async function onSceneEnter(sceneIndex) {
             break;
 
         case 10:
-            // Percussion test — show reaction after delay
-            await wait(1500);
-            document.getElementById('percussionReaction')?.classList.add('active');
+            // Percussion test — initialize interactivity
+            initPercussionInteraction();
             break;
 
         case 11:
-            // Thermal test — quiz
+            // Thermal test — play video
+            const v11 = document.getElementById('thermalVideo');
+            if (v11) {
+                v11.currentTime = 0;
+                v11.play().catch(e => console.log("Autoplay blocked or video error:", e));
+            }
             break;
 
         case 12:
@@ -315,53 +360,67 @@ function prevScene() {
     goToScene(currentScene - 1, true);
 }
 
+let isAnimating = false;
+
 function goToScene(index, reverse = false) {
-    if (index < 0 || index >= totalScenes) return;
+    if (index < 0 || index >= totalScenes || index === currentScene || isAnimating) return;
 
     const oldScene = document.getElementById(`scene-${currentScene}`);
     const newScene = document.getElementById(`scene-${index}`);
 
     if (!oldScene || !newScene) return;
 
+    isAnimating = true;
+
     // Exit old scene
     oldScene.classList.remove('active');
-    oldScene.classList.add(reverse ? '' : 'exit-left');
+    oldScene.classList.add(reverse ? 'exit-right' : 'exit-left');
 
+    // Prepare new scene starting state
+    newScene.classList.remove('active', 'exit-left', 'exit-right', 'enter-left', 'enter-right');
+    newScene.classList.add(reverse ? 'enter-left' : 'enter-right');
+
+    // Force a tiny reflow
+    void newScene.offsetWidth;
+
+    // Animate to active position
+    requestAnimationFrame(() => {
+        newScene.classList.add('active');
+        newScene.classList.remove('enter-left', 'enter-right');
+    });
+
+    // Cleanup and unlock
     setTimeout(() => {
-        oldScene.classList.remove('exit-left');
-    }, 500);
-
-    // Enter new scene
-    if (reverse) {
-        newScene.style.transform = 'translateX(-40px)';
-        newScene.offsetHeight; // force reflow
-    }
-    newScene.classList.add('active');
+        oldScene.classList.remove('exit-left', 'exit-right');
+        isAnimating = false;
+    }, 450); // Slightly longer than CSS transition (0.4s)
 
     currentScene = index;
     onSceneEnter(index);
 }
 
 function updateProgress() {
-    const progress = ((currentScene) / (totalScenes - 1)) * 100;
-    document.getElementById('progressBar').style.width = progress + '%';
-    document.getElementById('currentSceneNum').textContent = currentScene + 1;
+    const progress = (currentScene / (totalScenes - 1)) * 100;
+    const bar = document.getElementById('progressBar');
+    if (bar) bar.style.width = progress + '%';
+    const num = document.getElementById('currentSceneNum');
+    if (num) num.textContent = currentScene + 1;
 }
 
 function updateNavButtons() {
-    document.getElementById('btnPrev').disabled = currentScene === 0;
-    // Hide nav next on scenes that have their own next button
-    const scenesWithOwnButton = [0, 1, 3, 5, 6, 7, 8, 9, 10, 11, 14, 15, 16, 17, 18];
-    // Just control prev/next arrow buttons
+    const prevBtn = document.getElementById('btnPrev');
+    if (prevBtn) prevBtn.disabled = currentScene === 0;
 }
 
 function restartCase() {
+    if (isAnimating) return;
+
     // Reset all scenes
     currentScene = 0;
 
-    // Remove all active/exit classes
+    // Remove all active/exit/enter classes
     document.querySelectorAll('.scene').forEach(s => {
-        s.classList.remove('active', 'exit-left');
+        s.classList.remove('active', 'exit-left', 'exit-right', 'enter-left', 'enter-right');
     });
 
     // Reset quiz states
@@ -407,6 +466,82 @@ function restartCase() {
     document.getElementById('scene-0').classList.add('active');
     updateProgress();
     updateNavButtons();
+}
+
+// Percussion Test Interaction
+let isProbePickedUp = false;
+
+function initPercussionInteraction() {
+    const container = document.getElementById('percussionInteractive');
+    const probe = document.getElementById('interactiveProbe');
+    const hint = document.querySelector('.interaction-hint p');
+    if (!container || !probe) return;
+
+    // Reset state
+    isProbePickedUp = false;
+    probe.classList.remove('active', 'tapping');
+    probe.style.left = '30px';
+    probe.style.top = '30px';
+    probe.style.pointerEvents = 'auto';
+    probe.style.transform = 'none';
+
+    if (hint) hint.textContent = "Click the Probe Tool to pick it up";
+
+    probe.onclick = (e) => {
+        e.stopPropagation();
+        isProbePickedUp = true;
+        probe.classList.add('active');
+        probe.style.pointerEvents = 'none'; // Pass clicks through to background
+        if (hint) hint.textContent = "Move probe to the decayed tooth and click to tap";
+    };
+
+    container.addEventListener('mousemove', (e) => {
+        if (!isProbePickedUp) return;
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Position so the probe tip follows the cursor
+        probe.style.left = `${x - 220}px`;
+        probe.style.top = `${y - 100}px`;
+        probe.style.transform = 'none';
+    });
+}
+
+async function performPercussion() {
+    if (!isProbePickedUp) return;
+
+    const probe = document.getElementById('interactiveProbe');
+    const impact = document.getElementById('painImpact');
+    const reaction = document.getElementById('percussionReaction');
+    const nextBtn = document.getElementById('btn-percussion-next');
+    const hint = document.querySelector('.interaction-hint');
+
+    if (probe.classList.contains('tapping')) return;
+
+    // Tapping animation
+    probe.style.animation = 'tapAnim 0.4s ease';
+    probe.classList.add('tapping');
+
+    await wait(300);
+
+    // Show pain impact and reaction
+    if (impact) impact.classList.remove('hidden');
+    if (reaction) reaction.classList.add('active');
+    if (hint) hint.classList.add('hidden');
+
+    // Vibrate/Shake effect on container
+    const container = document.getElementById('percussionInteractive');
+    if (container) container.classList.add('shake');
+
+    await wait(800);
+    if (container) container.classList.remove('shake');
+    probe.style.animation = '';
+    probe.classList.remove('tapping');
+
+    // Show next scene button
+    await wait(400);
+    if (nextBtn) nextBtn.classList.remove('hidden');
 }
 
 // Utility

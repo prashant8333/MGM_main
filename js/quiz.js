@@ -199,10 +199,10 @@ function submitPainProfile() {
     // Record as single quiz item
     scoreTracker.record('painProfile', painProfileSelections, allCorrect);
 
-    // Update submit button to continue
-    const submitBtn = document.getElementById('btn-pain-submit');
-    submitBtn.textContent = 'Continue →';
-    submitBtn.onclick = nextScene;
+    // Move to next scene automatically after a brief delay
+    setTimeout(() => {
+        nextScene();
+    }, 800);
 }
 
 function displayStatistics() {

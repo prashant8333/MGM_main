@@ -89,23 +89,44 @@ body {
     justify-content: center;
     opacity: 0;
     visibility: hidden;
-    transform: translateX(40px);
-    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s 0.5s;
+    transform: translateX(30px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
     padding: 24px;
     padding-bottom: 80px;
     overflow-y: auto;
+    z-index: 1;
 }
 
 .scene.active {
     opacity: 1;
     visibility: visible;
     transform: translateX(0);
-    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s;
+    z-index: 10;
 }
 
 .scene.exit-left {
     opacity: 0;
-    transform: translateX(-40px);
+    transform: translateX(-30px);
+    visibility: hidden;
+}
+
+.scene.exit-right {
+    opacity: 0;
+    transform: translateX(30px);
+    visibility: hidden;
+}
+
+/* Entry states for manual handling */
+.scene.enter-left {
+    transform: translateX(-30px);
+    opacity: 0;
+    visibility: visible;
+}
+
+.scene.enter-right {
+    transform: translateX(30px);
+    opacity: 0;
+    visibility: visible;
 }
 
 .scene-content {
@@ -1224,6 +1245,25 @@ body {
     }
 }
 
+/* ===== EPT VIDEO PLAYER ===== */
+.ept-video-wrapper {
+    width: 100%;
+    max-width: 640px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 2px solid var(--border);
+    box-shadow: 0 0 30px rgba(0, 212, 170, 0.15), var(--shadow-lg);
+    background: #000;
+    margin-bottom: 8px;
+}
+
+.ept-video {
+    width: 100%;
+    display: block;
+    max-height: 320px;
+    object-fit: cover;
+}
+
 /* ===== EPT (Electric Pulp Test) ===== */
 .ept-container {
     width: 100%;
@@ -1679,7 +1719,331 @@ body {
     display: none !important;
 }
 
-/* ===== RESPONSIVE ===== */
+/* ===== INTERACTIVE EXAM (Scene 10) ===== */
+.interactive-exam-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 450px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #000;
+    box-shadow: var(--shadow-lg);
+    border: 2px solid var(--border);
+}
+
+.exam-background {
+    position: absolute;
+    inset: 0;
+    cursor: crosshair;
+}
+
+.exam-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.9);
+}
+
+/* ===== PERCUSSION VIDEO ANIMATION ===== */
+.percussion-video-anim {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.anim-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.9);
+}
+
+/* Frame 1: visible 0–40% of cycle, fades out at 50%, hidden 55–100% */
+.frame-1 {
+    animation: videoFrame1 3s ease-in-out infinite;
+}
+
+/* Frame 2: hidden 0–45%, fades in at 50%, visible 55–90%, fades out at 100% */
+.frame-2 {
+    animation: videoFrame2 3s ease-in-out infinite;
+}
+
+@keyframes videoFrame1 {
+    0% {
+        opacity: 1;
+    }
+
+    40% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    90% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes videoFrame2 {
+    0% {
+        opacity: 0;
+    }
+
+    45% {
+        opacity: 0;
+    }
+
+    55% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.exam-hotspot {
+    position: absolute;
+    top: 55%;
+    left: 42%;
+    width: 130px;
+    height: 110px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 40%;
+    z-index: 5;
+    cursor: pointer;
+}
+
+.pain-impact {
+    position: absolute;
+    inset: 0;
+    z-index: 200;
+    /* Above tools */
+    animation: fadeIn 0.2s ease;
+}
+
+.pain-impact-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hand-held-tool {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    background-image: url('../images/mouth_close_up.jpg');
+    background-size: 800px auto;
+    background-position: -500px -60px;
+    /* Focus on Right hand */
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 0, 0, 0.2);
+    pointer-events: auto;
+    cursor: grab;
+    z-index: 100;
+    transition: transform 0.2s ease;
+}
+
+.spray-hand {
+    background-position: -40px -60px;
+    /* Focus on Left hand */
+    width: 240px;
+    height: 240px;
+}
+
+.hand-held-tool:hover {
+    transform: scale(1.05);
+    border-color: var(--accent);
+}
+
+.hand-held-tool.active {
+    transform: scale(1.1);
+    cursor: grabbing;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+}
+
+.tool-label {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: #000;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 4px 14px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.interaction-hint {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 14, 26, 0.8);
+    backdrop-filter: blur(4px);
+    padding: 10px 20px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 10;
+    border: 1px solid var(--border);
+}
+
+.hint-icon {
+    font-size: 1.2rem;
+    animation: pulse 1.5s infinite;
+}
+
+.interaction-hint p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Spray Tool Style */
+.spray-tool {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    z-index: 15;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.spray-can-tool {
+    font-size: 3.5rem;
+    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.4));
+}
+
+.spray-tool.active {
+    transform: scale(1.1);
+    filter: drop-shadow(0 15px 20px rgba(0, 212, 170, 0.4));
+}
+
+/* Spray Effect Particles */
+.spray-effect {
+    position: absolute;
+    top: 55%;
+    left: 45%;
+    width: 100px;
+    height: 100px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.spray-effect span {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #7dd3fc;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #7dd3fc;
+    animation: sprayShoot 1s ease-out infinite;
+}
+
+@keyframes sprayShoot {
+    0% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(60px, -20px);
+        opacity: 0;
+    }
+}
+
+.spray-effect span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.spray-effect span:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.spray-effect span:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.spray-effect span:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.spray-effect span:nth-child(5) {
+    animation-delay: 0.4s;
+}
+
+@keyframes tapAnim {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0);
+    }
+
+    50% {
+        transform: translateY(-30px) rotate(-10deg);
+    }
+}
+
+@keyframes containerShake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-5px);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+.shake {
+    animation: containerShake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+}
+
 @media (max-width: 640px) {
     .intro-title {
         font-size: 2.5rem;
