@@ -1,0 +1,35 @@
+# Blender MTL File: 'Teeth.blend'
+# Material Count: 3
+
+newmtl Teeth
+Ns 100.000
+Ka 1.000 1.000 1.000
+Kd 0.960 0.940 0.900
+Ks 0.300 0.300 0.300
+Ke 0.000 0.000 0.000
+Ni 1.000
+d 1.000
+illum 2
+map_Kd ../../textures/AlysonTeeth.png
+
+newmtl Gums
+Ns 60.000
+Ka 1.000 1.000 1.000
+Kd 0.960 0.940 0.900
+Ks 0.200 0.200 0.200
+Ke 0.000 0.000 0.000
+Ni 1.000
+d 1.000
+illum 2
+map_Kd ../../textures/AlysonTeeth.png
+
+newmtl Tongue
+Ns 40.000
+Ka 1.000 1.000 1.000
+Kd 0.960 0.940 0.900
+Ks 0.100 0.100 0.100
+Ke 0.000 0.000 0.000
+Ni 1.000
+d 1.000
+illum 2
+map_Kd ../../textures/AlysonTeeth.png

@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reversible Pulpitis — Interactive Case Study</title>
+    <meta name="description"
+        content="An interactive dental education experience about diagnosing and managing Acute Reversible Pulpitis through a simulated patient encounter.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Scene Container -->
+    <div class="scene-container" id="sceneContainer">
+
+        <!-- SCENE 0: Title/Intro -->
+        <section class="scene active" id="scene-0" data-scene="0">
+            <div class="scene-content intro-scene">
+                <div class="intro-badge">Interactive Case Study</div>
+                <h1 class="intro-title">Reversible<br><span class="gradient-text">Pulpitis</span></h1>
+                <p class="intro-subtitle">A clinical diagnosis journey</p>
+                <div class="patient-intro-art">
+                    <div class="patient-photo-wrapper">
+                        <img src="images/patient_intro.jpg" alt="Patient holding cheek in pain at dental clinic"
+                            class="patient-intro-photo">
+                        <div class="pain-stars">
+                            <span>✦</span><span>✦</span><span>✦</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-primary btn-start" onclick="nextScene()">
+                    Begin Case <span class="btn-arrow">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCENE 1: Patient Enters -->
+        <section class="scene" id="scene-1" data-scene="1">
+            <div class="scene-content dialogue-scene">
+                <div class="scene-label">Patient Arrival</div>
+                <div class="clinic-image-container">
+                    <img src="images/patient_intro.jpg" alt="Patient arriving at dental clinic" class="clinic-img">
+                    <div class="clinic-overlay"></div>
+
+                    <!-- Patient speech bubble — left side, above patient's head -->
+                    <div class="speech-bubble patient-bubble hidden" id="bubble-1a">
+                        <span class="bubble-speaker patient-speaker">Patient</span>
+                        <p class="dialogue-text" id="dialogue-1a"></p>
+                        <div class="bubble-tail tail-left"></div>
+                    </div>
+
+                    <!-- Doctor speech bubble — right side, above doctor's head -->
+                    <div class="speech-bubble doctor-bubble hidden" id="dialogue-1b-container">
+                        <span class="bubble-speaker doctor-speaker">Doctor</span>
+                        <p class="dialogue-text" id="dialogue-1b"></p>
+                        <div class="bubble-tail tail-right"></div>
+                    </div>
+                </div>
+                <button class="btn-primary btn-next hidden" id="btn-scene-1" onclick="nextScene()">
+                    Continue <span class="btn-arrow">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCENE 2: Loading / Patient Sits -->
+        <section class="scene" id="scene-2" data-scene="2">
+            <div class="scene-content loading-scene">
+                <div class="loading-visual">
+                    <div class="dental-chair-art">
+                        <div class="chair-icon">🪑</div>
+                        <div class="patient-sitting-icon">🧑</div>
+                    </div>
+                    <div class="loading-spinner">
+                        <div class="spinner-ring"></div>
+                    </div>
+                    <p class="loading-text">Patient is taking a seat...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENE 3: Patient Backstory -->
+        <section class="scene" id="scene-3" data-scene="3">
+            <div class="scene-content dialogue-scene">
+                <div class="scene-label">Patient History</div>
+                <div class="clinic-image-container">
+                    <img src="images/exam_background.jpg" alt="Patient in dental chair" class="clinic-img">
+                    <div class="clinic-overlay"></div>
+
+                    <!-- Patient speech bubble 1 (3a) -->
+                    <div class="speech-bubble patient-bubble hidden" id="bubble-3a" style="top: 5%; left: 45%;">
+                        <span class="bubble-speaker patient-speaker">Patient</span>
+                        <p class="dialogue-text" id="dialogue-3a"></p>
+                        <div class="bubble-tail tail-left"></div>
+                    </div>
+
+                    <!-- Patient speech bubble 2 (3b) -->
+                    <div class="speech-bubble patient-bubble hidden" id="dialogue-3b-container"
+                        style="top: 55%; left: 45%;">
+                        <span class="bubble-speaker patient-speaker">Patient</span>
+                        <p class="dialogue-text" id="dialogue-3b"></p>
+                        <div class="bubble-tail tail-left"></div>
+                    </div>
+                </div>
+                <button class="btn-primary btn-next hidden" id="btn-scene-3" onclick="nextScene()">
+                    Continue <span class="btn-arrow">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCENE 4: Chief Complaint Card -->
+        <section class="scene" id="scene-4" data-scene="4">
+            <div class="scene-content card-scene">
+                <div class="scene-label">Chief Complaint</div>
+                <div class="complaint-card">
+                    <div class="card-header">
+                        <div class="card-icon">📋</div>
+                        <h2>Chief Complaint</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="complaint-text">Pain on <strong>1st Mandibular Molar</strong> on <strong>Left
+                                Side</strong></p>
+                        <div class="tooth-number-badge">Tooth #36</div>
+                    </div>
+                </div>
+                <button class="btn-primary btn-next" onclick="nextScene()">
+                    Continue <span class="btn-arrow">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCENE 5: Doctor-Patient History Dialogue -->
+        <section class="scene" id="scene-5" data-scene="5">
+            <div class="scene-content dialogue-scene">
+                <div class="scene-label">Patient History</div>
+                <div class="clinic-image-container">
+                    <img src="images/patient_history_2.jpg" alt="Doctor and patient in clinic" class="clinic-img">
+                    <div class="clinic-overlay"></div>
+
+                    <!-- Doctor bubble (5a) - Top Right above standing doctor -->
+                    <div class="speech-bubble doctor-bubble hidden" id="dialogue-5a-container"
+                        style="top: 5%; right: 4%;">
+                        <span class="bubble-speaker doctor-speaker">Doctor</span>
+                        <p class="dialogue-text" id="dialogue-5a"></p>
+                        <div class="bubble-tail tail-right"></div>
+                    </div>
+
+                    <!-- Patient bubble (5b) - Top Left above sitting patient -->
+                    <div class="speech-bubble patient-bubble hidden" id="dialogue-5b-container"
+                        style="top: 25%; left: 4%;">
+                        <span class="bubble-speaker patient-speaker">Patient</span>
+                        <p class="dialogue-text" id="dialogue-5b"></p>
+                        <div class="bubble-tail tail-left"></div>
+                    </div>
+
+                    <!-- Patient bubble (5c) - Lower Left -->
+                    <div class="speech-bubble patient-bubble hidden" id="dialogue-5c-container"
+                        style="top: 55%; left: 6%;">
+                        <span class="bubble-speaker patient-speaker">Patient</span>
+                        <p class="dialogue-text" id="dialogue-5c"></p>
+                        <div class="bubble-tail tail-left"></div>
+                    </div>
+
+                    <!-- Doctor bubble (5d) - Middle Right -->
+                    <div class="speech-bubble doctor-bubble hidden" id="dialogue-5d-container"
+                        style="top: 45%; right: 6%;">
+                        <span class="bubble-speaker doctor-speaker">Doctor</span>
+                        <p class="dialogue-text" id="dialogue-5d"></p>
+                        <div class="bubble-tail tail-right"></div>
+                    </div>
+                </div>
+                <button class="btn-primary btn-next hidden" id="btn-scene-5" onclick="nextScene()">
+                    Continue <span class="btn-arrow">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCENE 6: Quiz — Pain Profile -->
+        <section class="scene" id="scene-6" data-scene="6">
+            <div class="scene-content quiz-scene">
+                <div class="scene-label">Clinical Assessment</div>
+                <div class="loading-mini-scene">
+                    <div class="spinner-ring small"></div>
+                    <p>Please fill appropriate option(s) based on patient's complaint</p>
+                </div>
+                <div class="pain-profile-quiz">
+                    <h2 class="quiz-title">Pain Profile</h2>
+                    <div class="pain-fields">
+                        <div class="pain-field">
+                            <label>Pain Status</label>
+                            <div class="options-row" data-field="status">
+                                <button class="option-btn" data-value="Present" data-correct="true">Present</button>
+                                <button class="option-btn" data-value="Absent" data-correct="false">Absent</button>
+                            </div>
+                        </div>
+                        <div class="pain-field">
+                            <label>Character</label>
+                            <div class="options-row" data-field="character">
+                                <button class="option-btn" data-value="Sharp" data-correct="true">Sharp</button>
+                                <button class="option-btn" data-value="Dull" data-correct="false">Dull</button>
+                                <button class="option-btn" data-value="Throbbing"
+                                    data-correct="false">Throbbing</button>
+                            </div>
+                        </div>
+                        <div class="pain-field">
+                            <label>Duration</label>
+                            <div class="options-row" data-field="duration">
+                                <button class="option-btn" data-value="Seconds" data-correct="true">Lasting
+                                    Seconds</button>
+                                <button class="option-btn" data-value="Minutes" data-correct="false">Lasting
+                                    Minutes</button>
+                                <button class="option-btn" data-value="Hours" data-correct="false">Lasting
+                                    Hours</button>
+                            </div>
+                        </div>
+                        <div class="pain-field">
+                            <label>Increased By</label>
+                            <div class="options-row multi" data-field="triggers">
+                                <button class="option-btn" data-value="Cold" data-correct="true">Cold</button>
+                                <button class="option-btn" data-value="Sweet" data-correct="true">Sweet</button>
+                                <button class="option-btn" data-value="Heat" data-correct="false">Heat</button>
+                                <button class="option-btn" data-value="Pressure" data-correct="false">Pressure</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-primary btn-submit hidden" id="btn-pain-submit" onclick="submitPainProfile()">
+                        Submit <span class="btn-arrow">✓</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENE 7: Doctor Ready to Examine -->
+        <section class="scene" id="scene-7" data-scene="7">
+            <div class="scene-content dialogue-scene">
+                <div class="scene-label">Examination</div>
+                <div class="clinic-image-container">
+                    <img src="images/oral_exam.jpg" alt="Doctor examining patient" class="clinic-img">
+                    <div class="clinic-overlay"></div>
+
+                    <!-- Doctor bubble (7a) -->
+                    <div class="speech-bubble doctor-bubble hidden" id="dialogue-7a-container"
+                        style="top: 15%; right: 5%;">
+                        <span class="bubble-speaker doctor-speaker">Doctor</span>
+                        <p class="dialogue-text" id="dialogue-7a"></p>
+                        <div class="bubble-tail tail-right"></div>
+                    </div>
+                </div>
+                <button class="btn-primary btn-next hidden" id="btn-scene-7" onclick="nextScene()">
+                    Examine Oral Cavity <span class="btn-arrow">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCENE 8: 3D Oral Cavity -->
+        <section class="scene" id="scene-8" data-scene="8">
+            <div class="scene-content model-scene">
+                <div class="scene-label">Oral Examination — 3D View</div>
+                <div class="model-container" id="modelContainer">
+                    <div class="model-loading" id="modelLoading">
+                        <div class="spinner-ring"></div>
+                        <p>Loading 3D Model...</p>
+                    </div>
+                    <canvas id="teethCanvas"></canvas>
+                </div>
+                <div class="model-info">
+                    <div class="info-badge cavity-badge">
+                        <span class="badge-dot"></span>
+                        Deep cavity on left mandibular 1st molar (36)
+                    </div>
+                    <p class="model-hint">🖱️ Drag to rotate • Scroll to zoom</p>
+                </div>
+                <button class="btn-primary btn-next" onclick="nextScene()">
+                    Proceed to Tests <span class="btn-arrow">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCENE 9: Probe & Mirror Exam -->
+        <section class="scene" id="scene-9" data-scene="9">
+            <div class="scene-content exam-scene">
+                <div class="scene-label">Clinical Examination</div>
+                <div class="exam-animation-container">
+                    <div class="tooth-exam-visual">
+                        <div class="tooth-svg-container">
+                            <svg viewBox="0 0 200 300" class="tooth-svg">
+                                <!-- Tooth body -->
+                                <path d="M60,80 Q60,30 100,20 Q140,30 140,80 L145,180 Q145,260 100,280 Q55,260 55,180 Z"
+                                    fill="#f0e6d3" stroke="#c9b896" stroke-width="2" />
+                                <!-- Cavity -->
+                                <ellipse cx="100" cy="60" rx="25" ry="20" fill="#4a3728" opacity="0.9" />
+                                <ellipse cx="100" cy="55" rx="18" ry="14" fill="#2d1f14" />
+                                <!-- Probe animation -->
+                                <g class="probe-anim" id="probeAnim">
+                                    <line x1="100" y1="0" x2="100" y2="50" stroke="#silver" stroke-width="3"
+                                        stroke-linecap="round" />
+                                    <circle cx="100" cy="50" r="2" fill="#888" />
+                                </g>
+                                <!-- Mirror -->
+                                <g class="mirror-anim" id="mirrorAnim">
+                                    <line x1="160" y1="100" x2="155" y2="70" stroke="#silver" stroke-width="2.5" />
+                                    <ellipse cx="160" cy="105" rx="15" ry="12" fill="none" stroke="#aaa"
+                                        stroke-width="2" />
+                                    <ellipse cx="160" cy="105" rx="13" ry="10" fill="#d0e8ff" opacity="0.5" />
+                                </g>
+                            </svg>
+                        </div>
+                        <p class="exam-description">Examining cavity with periodontal probe and dental mirror...</p>
+                    </div>
+                </div>
+                <button class="btn-primary btn-next" onclick="nextScene()">
+                    Percussion Test <span class="btn-arrow">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCENE 10: Percussion Test -->
+        <section class="scene" id="scene-10" data-scene="10">
+            <div class="scene-content exam-scene">
+                <div class="scene-label">Percussion Test</div>
+                <div class="exam-animation-container">
+                    <div class="tooth-exam-visual">
+                        <div class="tooth-svg-container">
+                            <svg viewBox="0 0 200 300" class="tooth-svg">
+                                <path d="M60,80 Q60,30 100,20 Q140,30 140,80 L145,180 Q145,260 100,280 Q55,260 55,180 Z"
+                                    fill="#f0e6d3" stroke="#c9b896" stroke-width="2" />
+                                <ellipse cx="100" cy="60" rx="25" ry="20" fill="#4a3728" opacity="0.9" />
+                                <ellipse cx="100" cy="55" rx="18" ry="14" fill="#2d1f14" />
+                                <!-- Percussion probe tapping -->
+                                <g class="percussion-anim" id="percussionAnim">
+                                    <line x1="100" y1="-30" x2="100" y2="15" stroke="#b0b0b0" stroke-width="3"
+                                        stroke-linecap="round" />
+                                    <circle cx="100" cy="15" r="3" fill="#999" />
+                                </g>
+                                <!-- Pain waves -->
+                                <g class="pain-waves" id="painWaves">
+                                    <circle cx="100" cy="60" r="30" fill="none" stroke="#ff4444" stroke-width="1.5"
+                                        opacity="0" />
+                                    <circle cx="100" cy="60" r="45" fill="none" stroke="#ff4444" stroke-width="1"
+                                        opacity="0" />
+                                    <circle cx="100" cy="60" r="60" fill="none" stroke="#ff4444" stroke-width="0.5"
+                                        opacity="0" />
+                                </g>
+                            </svg>
+                        </div>
+                        <p class="exam-description">Tapping the tooth with probe to check for tenderness...</p>
+                    </div>
+                    <div class="patient-reaction" id="percussionReaction">
+                        <span class="reaction-icon">😣</span>
+                        <span class="reaction-text">Ouch! That hurts!</span>
+                    </div>
+                </div>
+                <button class="btn-primary btn-next" onclick="nextScene()">
+                    Thermal Test <span class="btn-arrow">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCENE 11: Thermal Test Quiz -->
+        <section class="scene" id="scene-11" data-scene="11">
+            <div class="scene-content exam-scene">
+                <div class="scene-label">Thermal Test</div>
+                <div class="exam-animation-container">
+                    <div class="thermal-test-visual">
+                        <div class="spray-animation">
+                            <div class="spray-can">
+                                <div class="can-body">❄️</div>
+                                <div class="spray-particles" id="sprayParticles">
+                                    <span></span><span></span><span></span><span></span><span></span>
+                                </div>
+                            </div>
+                            <div class="tooth-target">🦷</div>
+                        </div>
+                        <p class="exam-description">Doctor sprays cold stimulus on the affected tooth...</p>
+                        <div class="patient-reaction active">
+                            <span class="reaction-icon">😖</span>
+                            <span class="reaction-text">Ahhh! That's cold!</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="quiz-card" id="quiz-thermal">
+                    <h3 class="quiz-question">What is the result of the Thermal Test?</h3>
+                    <div class="quiz-options">
+                        <button class="quiz-option" data-quiz="thermal" data-answer="1" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">A</span>
+                            <span class="option-text">Normal</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="thermal" data-answer="2" data-correct="true"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">B</span>
+                            <span class="option-text">Abnormal response to cold or heat</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="thermal" data-answer="3" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">C</span>
+                            <span class="option-text">No response</span>
+                        </button>
+                    </div>
+                    <div class="quiz-feedback hidden" id="feedback-thermal"></div>
+                    <button class="btn-primary btn-next hidden" id="btn-quiz-thermal" onclick="nextScene()">
+                        Continue <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENE 12: Electric Pulp Test -->
+        <section class="scene" id="scene-12" data-scene="12">
+            <div class="scene-content exam-scene">
+                <div class="scene-label">Electric Pulp Test (EPT)</div>
+                <div class="ept-container">
+                    <div class="ept-comparison">
+                        <div class="ept-card normal-tooth">
+                            <div class="ept-tooth-icon">🦷</div>
+                            <h4>Normal Tooth</h4>
+                            <div class="ept-meter">
+                                <div class="meter-bar" id="meterNormal"></div>
+                            </div>
+                            <div class="ept-value" id="eptNormalValue">0 μA</div>
+                            <div class="ept-label">Control</div>
+                        </div>
+                        <div class="ept-vs">VS</div>
+                        <div class="ept-card affected-tooth">
+                            <div class="ept-tooth-icon">🦷</div>
+                            <h4>Affected Tooth (#36)</h4>
+                            <div class="ept-meter">
+                                <div class="meter-bar affected" id="meterAffected"></div>
+                            </div>
+                            <div class="ept-value" id="eptAffectedValue">0 μA</div>
+                            <div class="ept-label">Test</div>
+                        </div>
+                    </div>
+                    <div class="ept-result hidden" id="eptResult">
+                        <div class="result-badge">
+                            <span class="result-icon">⚡</span>
+                            <span>Both teeth respond — <strong>Pulp is Vital</strong></span>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-primary btn-next hidden" id="btn-scene-12" onclick="nextScene()">
+                    View Radiograph <span class="btn-arrow">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCENE 13: Radiograph -->
+        <section class="scene" id="scene-13" data-scene="13">
+            <div class="scene-content card-scene">
+                <div class="scene-label">Radiographic Examination</div>
+                <div class="radiograph-container">
+                    <div class="xray-frame">
+                        <div class="xray-image">
+                            <svg viewBox="0 0 300 250" class="xray-svg">
+                                <!-- Dark background -->
+                                <rect width="300" height="250" fill="#0a0a0a" rx="8" />
+                                <!-- Jawbone -->
+                                <path d="M20,200 Q50,210 100,200 Q150,190 200,195 Q250,200 280,205" fill="none"
+                                    stroke="#445566" stroke-width="20" opacity="0.6" />
+                                <!-- Teeth silhouettes -->
+                                <rect x="40" y="90" width="30" height="100" rx="5" fill="#667788" opacity="0.7" />
+                                <rect x="80" y="85" width="32" height="105" rx="5" fill="#667788" opacity="0.7" />
+                                <!-- Tooth 36 - with cavity shadow -->
+                                <rect x="122" y="80" width="35" height="110" rx="5" fill="#667788" opacity="0.7"
+                                    stroke="#88aacc" stroke-width="1" />
+                                <ellipse cx="140" cy="95" rx="12" ry="10" fill="#222" opacity="0.9" />
+                                <!-- Arrow pointing to cavity -->
+                                <line x1="180" y1="70" x2="155" y2="90" stroke="#ff6666" stroke-width="2" />
+                                <polygon points="155,90 160,82 162,92" fill="#ff6666" />
+                                <text x="182" y="68" fill="#ff6666" font-size="10" font-family="Inter">Cavity</text>
+                                <!-- More teeth -->
+                                <rect x="167" y="85" width="30" height="105" rx="5" fill="#667788" opacity="0.7" />
+                                <rect x="207" y="88" width="30" height="102" rx="5" fill="#667788" opacity="0.7" />
+                                <!-- Periapical area - normal -->
+                                <text x="120" y="210" fill="#88aacc" font-size="9" font-family="Inter">No periapical
+                                    radiolucency</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="xray-findings">
+                        <h3>Radiographic Findings</h3>
+                        <ul>
+                            <li>Deep carious lesion on tooth #36</li>
+                            <li>No periapical radiolucency</li>
+                            <li>Intact lamina dura</li>
+                            <li>Normal periodontal ligament space</li>
+                        </ul>
+                    </div>
+                </div>
+                <button class="btn-primary btn-next" onclick="nextScene()">
+                    Clinical Diagnosis <span class="btn-arrow">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCENE 14: Clinical Diagnosis Quiz -->
+        <section class="scene" id="scene-14" data-scene="14">
+            <div class="scene-content quiz-scene">
+                <div class="scene-label">Clinical Diagnosis</div>
+                <div class="quiz-card" id="quiz-diagnosis">
+                    <h3 class="quiz-question">Based on your findings, what is the Clinical Diagnosis?</h3>
+                    <div class="quiz-options">
+                        <button class="quiz-option" data-quiz="diagnosis" data-answer="1" data-correct="true"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">A</span>
+                            <span class="option-text">Acute Reversible Pulpitis</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="diagnosis" data-answer="2" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">B</span>
+                            <span class="option-text">Acute Irreversible Pulpitis</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="diagnosis" data-answer="3" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">C</span>
+                            <span class="option-text">Chronic Reversible Pulpitis</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="diagnosis" data-answer="4" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">D</span>
+                            <span class="option-text">Pulp Necrosis</span>
+                        </button>
+                    </div>
+                    <div class="quiz-feedback hidden" id="feedback-diagnosis"></div>
+                    <button class="btn-primary btn-next hidden" id="btn-quiz-diagnosis" onclick="nextScene()">
+                        Continue <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENE 15: Q1 — Immediate Management -->
+        <section class="scene" id="scene-15" data-scene="15">
+            <div class="scene-content quiz-scene">
+                <div class="scene-label">Management — Q1</div>
+                <div class="quiz-card" id="quiz-q1">
+                    <h3 class="quiz-question">Q1. What is the most proper immediate management?</h3>
+                    <div class="quiz-options">
+                        <button class="quiz-option" data-quiz="q1" data-answer="A" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">A</span>
+                            <span class="option-text">Immediate root canal treatment</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="q1" data-answer="B" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">B</span>
+                            <span class="option-text">Extraction</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="q1" data-answer="C" data-correct="true"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">C</span>
+                            <span class="option-text">Remove noxious stimuli</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="q1" data-answer="D" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">D</span>
+                            <span class="option-text">Systemic antibiotics</span>
+                        </button>
+                    </div>
+                    <div class="quiz-feedback hidden" id="feedback-q1"></div>
+                    <button class="btn-primary btn-next hidden" id="btn-quiz-q1" onclick="nextScene()">
+                        Next Question <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENE 16: Q2 — Antibiotics -->
+        <section class="scene" id="scene-16" data-scene="16">
+            <div class="scene-content quiz-scene">
+                <div class="scene-label">Management — Q2</div>
+                <div class="quiz-card" id="quiz-q2">
+                    <h3 class="quiz-question">Q2. When are systemic antibiotics indicated?</h3>
+                    <div class="quiz-options">
+                        <button class="quiz-option" data-quiz="q2" data-answer="A" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">A</span>
+                            <span class="option-text">In all pulpitis cases</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="q2" data-answer="B" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">B</span>
+                            <span class="option-text">When pain is severe</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="q2" data-answer="C" data-correct="true"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">C</span>
+                            <span class="option-text">When swelling with systemic signs is present</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="q2" data-answer="D" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">D</span>
+                            <span class="option-text">In reversible pulpitis</span>
+                        </button>
+                    </div>
+                    <div class="quiz-feedback hidden" id="feedback-q2"></div>
+                    <button class="btn-primary btn-next hidden" id="btn-quiz-q2" onclick="nextScene()">
+                        Next Question <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENE 17: Q3 — Intracanal Medicament -->
+        <section class="scene" id="scene-17" data-scene="17">
+            <div class="scene-content quiz-scene">
+                <div class="scene-label">Management — Q3</div>
+                <div class="quiz-card" id="quiz-q3">
+                    <h3 class="quiz-question">Q3. What is the most appropriate intracanal medicament?</h3>
+                    <div class="quiz-options">
+                        <button class="quiz-option" data-quiz="q3" data-answer="A" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">A</span>
+                            <span class="option-text">Formocresol</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="q3" data-answer="B" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">B</span>
+                            <span class="option-text">Calcium hydroxide</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="q3" data-answer="C" data-correct="false"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">C</span>
+                            <span class="option-text">Triple antibiotic paste</span>
+                        </button>
+                        <button class="quiz-option" data-quiz="q3" data-answer="D" data-correct="true"
+                            onclick="selectQuizAnswer(this)">
+                            <span class="option-letter">D</span>
+                            <span class="option-text">No intracanal medicament</span>
+                        </button>
+                    </div>
+                    <div class="quiz-feedback hidden" id="feedback-q3"></div>
+                    <button class="btn-primary btn-next hidden" id="btn-quiz-q3" onclick="nextScene()">
+                        View Results <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENE 18: Statistics / End -->
+        <section class="scene" id="scene-18" data-scene="18">
+            <div class="scene-content stats-scene">
+                <div class="scene-label">Case Complete</div>
+                <div class="stats-container">
+                    <div class="stats-header">
+                        <div class="trophy-icon">🏆</div>
+                        <h2>Case Study Complete!</h2>
+                        <p class="stats-subtitle">Here's how you performed</p>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="statCorrect">0</div>
+                            <div class="stat-label">Correct</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="statTotal">0</div>
+                            <div class="stat-label">Total Questions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="statScore">0%</div>
+                            <div class="stat-label">Score</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="statTime">0:00</div>
+                            <div class="stat-label">Time Taken</div>
+                        </div>
+                    </div>
+                    <div class="stats-breakdown" id="statsBreakdown"></div>
+                    <div class="stats-message" id="statsMessage"></div>
+                    <button class="btn-primary" onclick="restartCase()">
+                        Restart Case <span class="btn-arrow">↺</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-controls" id="navControls">
+        <button class="nav-btn" id="btnPrev" onclick="prevScene()" disabled>
+            <span>←</span>
+        </button>
+        <div class="scene-counter">
+            <span id="currentSceneNum">1</span> / <span id="totalSceneNum">19</span>
+        </div>
+        <button class="nav-btn" id="btnNext" onclick="nextScene()">
+            <span>→</span>
+        </button>
+    </div>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
+
+    <script src="js/quiz.js"></script>
+    <script src="js/model.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
